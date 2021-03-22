@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
+        "fzaninotto/faker": "^1.9",
         "laravel-zero/framework": "^8.4"
     },
     "require-dev": {
@@ -40,5 +41,7 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["application"]
+    "bin": [
+        "elasticsearch-dump"
+    ]
 }
