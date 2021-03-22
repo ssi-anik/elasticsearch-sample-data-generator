@@ -1,0 +1,10 @@
+/vendor
+/.idea
+/.vscode
+/.vagrant
+.phpunit.result.cache
+docker-compose.yml
+test.sh
+*.json
+!composer.json
+!box.json
