@@ -2,27 +2,25 @@
 
 namespace App\Providers;
 
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
+    protected $fakerProviders = [
+        FakerProvider::class,
+    ];
+
     public function boot()
     {
-        //
-    }
+        $this->app->singleton(Generator::class, function ($app) {
+            $faker = Factory::create();
+            foreach ($this->fakerProviders as $provider) {
+                $faker->addProvider(new $provider($faker));
+            }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
+            return $faker;
+        });
     }
 }
