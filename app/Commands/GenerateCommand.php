@@ -23,7 +23,7 @@ class GenerateCommand extends Command
                             {--file=dump.json : Enter the file name}
                             {--entries=1 : Enter the number of entries}
                             {--action=index : Enter the action name [index or create]}
-                            {--index=my-es-index : Enter the index name}
+                            {--index=my-index : Enter the index name}
                             {--id=1 : Enter the sequence start value}
                             {--append : Append to existing file}
                             ';
@@ -41,8 +41,10 @@ class GenerateCommand extends Command
         $this->closeFile();
     }
 
-    public function handle(Generator $faker)
+    public function handle()
     {
+        $this->output->title('Generate dump for Elasticsearch bulk API with fzaninotto/faker');
+
         $this->prepareOptions();
         if (false === $this->askForConfirmation()) {
             $this->warn('Exiting...');
@@ -55,6 +57,11 @@ class GenerateCommand extends Command
         }
 
         $this->generateAndWriteDump();
+        /**
+         * Space is to be printed to keep padding between the next output and progressbar
+         */
+        $this->output->writeln(' ');
+        $this->output->success('Dump has been written to the file (' . $this->file . ') successfully.');
     }
 
     private function prepareOptions(): void
@@ -62,7 +69,7 @@ class GenerateCommand extends Command
         $this->fields = $this->argument('fields');
         $this->file = $this->option('file');
         $this->entries = $this->getNoOfEntries();
-        $this->action = $this->option('action');
+        $this->action = $this->getAction();
         $this->index = $this->option('index');
         $this->docStartId = $this->documentStartId();
         $this->mode = $this->option('append') ? 'a' : 'w';
@@ -70,7 +77,7 @@ class GenerateCommand extends Command
 
     private function askForConfirmation(): bool
     {
-        $this->info('The following values will be considered.');
+        $this->output->warning('The following values will be considered.');
         $this->table(['Options', 'Will use'], [
             ['File', $this->file],
             ['No of entries', $this->entries],
@@ -108,15 +115,25 @@ class GenerateCommand extends Command
     private function generateAndWriteDump()
     {
         $fields = $this->parseFields();
-        foreach (range(1, $this->entries) as $entry) {
-            $rows = [];
+        $this->output->writeln(' ');
+        $this->withProgressBar(range(1, $this->entries), function ($index) use ($fields) {
+            $source = [];
             foreach ($fields as $field) {
                 [$path, $method, $parameters] = $this->pathAndFieldResolver($field);
                 $value = call_user_func_array([$this->generator, $method], $parameters);
-                $rows = array_merge_recursive($rows, $this->dotNotationToArray($path, $value));
+                $source = array_merge_recursive($source, $this->dotNotationToArray($path, $value));
             }
-            $this->output->writeln(json_encode($rows));
-        }
+
+            $actionMetadata = [
+                $this->action => [
+                    '_index' => $this->index,
+                    '_id' => $this->docStartId + ($index - 1),
+                ],
+            ];
+
+            $this->writeToFile(json_encode($actionMetadata) . PHP_EOL);
+            $this->writeToFile(json_encode($source) . PHP_EOL);
+        });
     }
 
     private function pathAndFieldResolver($field): array
@@ -153,6 +170,11 @@ class GenerateCommand extends Command
             function ($previous, $current) {
                 return [$current => $previous];
             }, $value);
+    }
+
+    private function getAction()
+    {
+        return in_array($action = $this->option('action'), ['index', 'create']) ? $action : 'index';
     }
 
     private function getNoOfEntries(): int
