@@ -8,7 +8,7 @@ The purpose of the project is to generate a dump for Elasticsearch Bulk API.
 
 ## Installation
 - Clone the repository.
-- If you have `php` and `composer` installed on your local machine, then run `composer install` to install the project dependencies.
+- If you have `composer` installed on your local machine and satisfies the requirement, then run `composer install` to install the project dependencies.
 - If you don't know `php` or the local `php` requirement is not satisfied on your machine, then uncomment the `COPY . /app` and `RUN composer install` lines in `Dockerfile`. So, they'll look like the following.
 ```dockerfile
 # It'll copy the project in the PHP container.
@@ -18,8 +18,8 @@ COPY . /app
 RUN composer install
 ```
 - Run `cp docker-compose.yml.example docker-compose.yml`.
-- Make changes in your `docker-compose.yml` file. If you don't need the elasticsearch & kibana, remove those services.
-- If you made changes in the `Dockerfile` specified above, then in your `docker-compose.yml` file, comment/remove the `.:/app` and uncomment the `./dumps:/app/dumps` volumes in your `php` service.
+- Make changes in your `docker-compose.yml` file. If you don't need the `elasticsearch` & `kibana`, remove those services.
+- If you made the specified changes in the `Dockerfile`, then in your `docker-compose.yml` file, comment/remove the `.:/app` and uncomment the `./dumps:/app/dumps` volumes in your `php` service.
 - Run `docker-compose up -d --build` to start your containers.
 - If you're using docker, then exec in the container with `docker-compose exec php bash`.
 - Run `./elasticsearch-dump generate "fields_you_need"` to generate the dump. This is just the basic command. Check the documentation to find out what you can do with it.
