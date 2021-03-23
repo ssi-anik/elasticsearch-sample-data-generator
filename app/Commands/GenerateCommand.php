@@ -20,12 +20,13 @@ class GenerateCommand extends Command
 
     protected $signature = 'generate 
                             {fields : Enter the fields definition (required)}
-                            {--file=dump.json : Enter the file name}
+                            {--file=dumps/dump.json : Enter the file name}
                             {--entries=1 : Enter the number of entries}
                             {--action=index : Enter the action name [index or create]}
                             {--index=my-index : Enter the index name}
                             {--id=1 : Enter the sequence start value}
                             {--append : Append to existing file}
+                            {--force : Does not ask for confirmation}
                             ';
 
     protected $description = 'Generate dump for elasticsearch bulk API upload';
@@ -87,8 +88,7 @@ class GenerateCommand extends Command
             ['Append if file exists', $this->mode === 'a' ? 'True' : 'False'],
         ]);
 
-        // return $this->confirm('Proceed?', true);
-        return true;
+        return $this->option('force') ? true : $this->confirm('Proceed?', true);
     }
 
     private function canCreateFile(): bool
