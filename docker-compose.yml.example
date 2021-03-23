@@ -7,6 +7,7 @@ services:
             context: .
         volumes:
             - .:/app
+            #- ./dumps:/app/dumps
     
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.11.2
