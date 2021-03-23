@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use Faker\Generator;
+use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 use Throwable;
 
@@ -68,7 +69,7 @@ class GenerateCommand extends Command
     private function prepareOptions(): void
     {
         $this->fields = $this->argument('fields');
-        $this->file = $this->option('file');
+        $this->file = $this->getFilePath();
         $this->entries = $this->getNoOfEntries();
         $this->action = $this->getAction();
         $this->index = $this->option('index');
@@ -182,6 +183,23 @@ class GenerateCommand extends Command
         $noOfEntries = (int)$this->option('entries');
 
         return $noOfEntries > 0 ? $noOfEntries : 1;
+    }
+
+    private function getFilePath(): string
+    {
+        $file = $this->option('file');
+        $path = dirname($file);
+
+        /**
+         * I don't use windows
+         * Cannot help with the file path
+         * I'll always dump in `dumps` directory
+         */
+        if (Str::startsWith($path, '/')) {
+            return $file;
+        }
+
+        return sprintf('dumps/%s', pathinfo($file)['basename']);
     }
 
     private function documentStartId(): int
