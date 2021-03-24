@@ -25,7 +25,7 @@ RUN composer install
 - Run `./elasticsearch-dump generate "fields_you_need"` to generate the dump. This is just the basic command. Check the documentation to find out what you can do with it.
 
 ## Documentation
-Published [an article on dev.to](https://dev.to/ssianik) as a documentation. Find it out there.
+Published [an article on dev.to](https://dev.to/ssianik/elasticsearch-sample-data-generator-208k) as a documentation. Find it out there.
 
 ## Issues or Something is missing?
 As always, let me know if something is wrongly done or missed something. Open or comment in an issue. Did I miss something that can be used by others? Submit a PR. 
