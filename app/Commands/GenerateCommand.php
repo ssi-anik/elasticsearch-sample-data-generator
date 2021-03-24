@@ -82,12 +82,15 @@ class GenerateCommand extends Command
     private function askForConfirmation(): bool
     {
         $this->output->warning('The following values will be considered.');
+
+        $idType = $this->option('uuid') ? ['UUID', 'True'] : ['Document ID starts from', $this->docStartId];
+
         $this->table(['Options', 'Will use'], [
             ['File', $this->file],
             ['No of entries', $this->entries],
             ['Action type', $this->action],
             ['Index', $this->index],
-            ['Document ID starts from', $this->docStartId],
+            $idType,
             ['Append if file exists', $this->mode === 'a' ? 'True' : 'False'],
         ]);
 
