@@ -5,6 +5,7 @@ namespace App\Commands;
 use Faker\Generator;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 class GenerateCommand extends Command
@@ -27,6 +28,7 @@ class GenerateCommand extends Command
                             {--index=my-index : Enter the index name}
                             {--id=1 : Enter the sequence start value}
                             {--append : Append to existing file}
+                            {--uuid : UUID based ID generation}
                             {--force : Does not ask for confirmation}
                             ';
 
@@ -128,7 +130,7 @@ class GenerateCommand extends Command
             $actionMetadata = [
                 $this->action => [
                     '_index' => $this->index,
-                    '_id' => $this->docStartId + ($index - 1),
+                    '_id' => $this->option('uuid') ? Uuid::getFactory()->uuid4() : $this->docStartId + ($index - 1),
                 ],
             ];
 

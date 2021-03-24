@@ -18,7 +18,8 @@
     "require": {
         "php": "^7.3|^8.0",
         "fzaninotto/faker": "^1.9",
-        "laravel-zero/framework": "^8.4"
+        "laravel-zero/framework": "^8.4",
+        "ramsey/uuid": "^4.1"
     },
     "require-dev": {
         "mockery/mockery": "^1.4.2",
